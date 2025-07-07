@@ -1,4 +1,5 @@
 let ships=[]
+let evaled=[]
 
 var Fly_101 = '{"name":"Fly","level":1,"model":1,"size":1.05,"specs":{"shield":{"capacity":[75,100],"reload":[2,3]},"generator":{"capacity":[40,60],"reload":[10,15]},"ship":{"mass":60,"speed":[125,145],"rotation":[110,130],"acceleration":[100,120]}},"bodies":{"main":{"section_segments":12,"offset":{"x":0,"y":0,"z":10},"position":{"x":[0,0,0,0,0,0,0,0,0,0],"y":[-65,-60,-50,-20,10,30,55,75,60],"z":[0,0,0,0,0,0,0,0,0]},"width":[0,8,10,30,25,30,18,15,0],"height":[0,6,8,12,20,20,18,15,0],"propeller":true,"texture":[4,63,10,1,1,1,12,17]},"OI1l1":{"section_segments":12,"offset":{"x":0,"y":0,"z":20},"position":{"x":[0,0,0,0,0,0,0],"y":[-15,0,20,30,60],"z":[0,0,0,0,0]},"width":[0,13,17,10,5],"height":[0,18,25,18,5],"propeller":false,"texture":[7,9,9,4,4]},"cannon":{"section_segments":6,"offset":{"x":0,"y":-15,"z":-10},"position":{"x":[0,0,0,0,0,0],"y":[-40,-50,-20,0,20,30],"z":[0,0,0,0,0,20]},"width":[0,5,8,11,7,0],"height":[0,5,8,11,10,0],"angle":0,"laser":{"damage":[5,6],"rate":4,"type":1,"speed":[160,180],"number":1,"error":2.5},"propeller":false,"texture":[3,3,10,3]}},"wings":{"main":{"length":[60,20],"width":[100,50,40],"angle":[-10,10],"position":[0,20,10],"doubleside":true,"offset":{"x":0,"y":10,"z":5},"bump":{"position":30,"size":20},"texture":[11,63]}},"typespec":{"name":"Fly","level":1,"model":1,"code":101,"specs":{"shield":{"capacity":[75,100],"reload":[2,3]},"generator":{"capacity":[40,60],"reload":[10,15]},"ship":{"mass":60,"speed":[125,145],"rotation":[110,130],"acceleration":[100,120]}},"shape":[1.368,1.368,1.093,0.965,0.883,0.827,0.791,0.767,0.758,0.777,0.847,0.951,1.092,1.667,1.707,1.776,1.856,1.827,1.744,1.687,1.525,1.415,1.335,1.606,1.603,1.578,1.603,1.606,1.335,1.415,1.525,1.687,1.744,1.827,1.856,1.776,1.707,1.667,1.654,0.951,0.847,0.777,0.758,0.767,0.791,0.827,0.883,0.965,1.093,1.368],"lasers":[{"x":0,"y":-1.365,"z":-0.21,"angle":0,"damage":[5,6],"rate":4,"type":1,"speed":[160,180],"number":1,"spread":0,"error":2.5,"recoil":0}],"radius":1.856}}';
 ships.push(Fly_101);
@@ -12,7 +13,6 @@ var Spectator_623 = '{"name":"Spectator","level":6,"model":23,"size":0.8,"zoom":
 ships.push(Spectator_623);
 let p1name=""
 let p2name=""
-let duelActive=false;
 
 let VOCABULARY  = [
     {text: "You",       icon: "\u004e", key: "O"},
@@ -143,11 +143,11 @@ function startDuel(p1input, p2input) {
   p1name=p1input;
   p2name=p2input;
   for (i=0; i<game.ships.length; i++) {
-    if (game.ships.name == p1name) {
+    if (game.ships[i].name == p1name) {
       game.ships[i].set({x:100,y:0,ship:611});
       activeDuelers+=1;
     }
-    else if (game.ships.name == p2name) {
+    else if (game.ships[i].name == p2name) {
       game.ships[i].set({x:-100,y:0,ship:611});
       activeDuelers+=1;
     }
@@ -155,31 +155,27 @@ function startDuel(p1input, p2input) {
       game.ships[i].set({x:0,y:0,ship:623});
     }
   }
-  if (activeDuelers==2)
-  duelActive=false;
+  if (activeDuelers==2) {
+    echo("duel started")
+  }
 }
 
 var center = {
   id: "center",
   obj: "https://starblast.data.neuronality.com/mods/objects/plane.obj",
-  emissive: "https://raw.githubusercontent.com/Eman-Bman/starblast-ranked-dueling/refs/heads/main/RDPNG1.png"
+  emissive: "https://raw.githubusercontent.com/Eman-Bman/starblast-ranked-dueling/refs/heads/main/RDPNG2.png"
 };
 
 this.tick = function(game) {
   if (game.step == 60) {
     customBg();
   }
+
   if (game.step%30 == 2) {
-    if (duelActive===false) {
-      for (i=0; i<game.ships.length; i++) {
-        if (Math.pow(game.ships[i].x, 2) + Math.pow(game.ships[i].y, 2) >= 3600) {
-          game.ships[i].set({x:0,y:0});
-        }
-      }
-    }
+    updateScoreboard()
   }
   if (game.step%5 == 2) {
-    for (0; i<game.ships.length; i++) {
+    for (let i=0; i<game.ships.length; i++) {
       if (game.ships[i].crystals>=720) {
         game.ships[i].set({crystals:719});
       }
@@ -203,20 +199,110 @@ function customBg() {
   }) ;
 }
 
+eloRecieve = (jsontext) => {
+  const result = convertJsonToArray(jsontext);
+  evaled=result
+  echo(evaled); // optional: do something with the output
+}
+
+function convertJsonToArray(jsonText) {
+  try {
+    const data = JSON.parse(jsonText);
+    const result = [];
+
+    for (const userId in data) {
+      const { globalname, gamename, kills, deaths, elo } = data[userId];
+      result.push([userId, globalname, gamename, kills, deaths, elo]);
+    }
+
+    return result;
+  } catch (e) {
+    console.error("Invalid JSON:", e);
+    return [];
+  }
+}
+
+function eloEval() {
+  evaled = convertJsonToArray(data)
+}
+
+let _scoreboard_defaults = {
+    components: [
+        { type: "box", position: [0, 0, 100, 8], fill: "hsla(0, 100%, 50%, 0.25)" },
+        { type: "box", position: [62, 0, 7, 8], fill: "hsla(0, 100%, 50%, 1)" },
+        { type: "box", position: [70, 0, 7, 8], fill: "hsla(0, 100%, 50%, 1)" },
+        { type: "box", position: [78, 0, 22, 8], fill: "hsla(0, 100%, 50%, 1)" },
+        { type: "text", position: [2, 1, 98, 6], value: "𝗣𝗹𝗮𝘆𝗲𝗿𝘀", color: "hsla(0, 100%, 50%, 1)", align: "left" },
+        { type: "text", position: [62, 0, 7, 8], value: "𝗞", color: "hsla(0, 0%, 0%, 1.00)", align: "center" },
+        { type: "text", position: [70, 0, 7, 8], value: "𝗗", color: "hsla(0, 0%, 0%, 1.00)", align: "center" },
+        { type: "text", position: [78, 0.5, 22, 7], value: "𝗘𝗟𝗢", color: "hsla(0, 0%, 0%, 1.00)", align: "center" },
+    ]
+}
+
+const updateScoreboard = () => {
+  let result = evaled; // Parsed ELO data as [ [globalname, gamename, id, kills, deaths, elo], ... ]
+  let shipNames = game.ships.map(s => s.name);
+
+  let playerEntries = shipNames.map(name => {
+    let match = result.find(entry => entry[1] === name); // Match by gamename
+    if (match) {
+      return match;
+    } else {
+      return [name, name, name, 0, 0, "/join"]; // Fallback for unknown player
+    }
+  });
+
+  // Optional: Sort by elo (numerically), but push non-number elo ("/join") to the bottom
+  playerEntries.sort((a, b) => {
+    const eloA = typeof a[5] === "number" ? a[5] : -Infinity;
+    const eloB = typeof b[5] === "number" ? b[5] : -Infinity;
+    return eloB - eloA;
+  });
+
+  let playerComponents = playerEntries.map((item, index) => {
+    let Y_OFFSET = (index + 1) * 9;
+    let elo = item[5];
+    let kills = item[3];
+    let deaths = item[4];
+    let id = item[2];
+
+    return [
+      { type: "box", position: [0, Y_OFFSET, 100, 8], fill: "hsla(0, 100%, 50%, 0.065)" },
+      { type: "box", position: [62, Y_OFFSET, 7, 8], fill: "hsla(0, 100%, 50%, 0.1)" },
+      { type: "box", position: [70, Y_OFFSET, 7, 8], fill: "hsla(0, 100%, 50%, 0.1)" },
+      { type: "box", position: [78, Y_OFFSET, 22, 8], fill: "hsla(0, 100%, 50%, 0.1)" },
+      { type: "text", position: [2, Y_OFFSET + 1, 55, 6], value: id, color: "hsla(0, 0%, 100%, 1)", align: "left" },
+      { type: "text", position: [62, Y_OFFSET, 7, 8], value: kills, color: "hsla(0, 0%, 100%, 1)", align: "center" },
+      { type: "text", position: [70, Y_OFFSET, 7, 8], value: deaths, color: "hsla(0, 0%, 100%, 1)", align: "center" },
+      { type: "text", position: [78, Y_OFFSET + 1, 22, 6], value: elo, color: "hsla(0, 0%, 100%, 1)", align: "center" },
+    ];
+  });
+
+  let outp = playerComponents.flat();
+
+  game.setUIComponent({
+    id: "scoreboard",
+    clickable: false,
+    visible: true,
+    components: [
+      ..._scoreboard_defaults.components,
+      ...outp
+    ]
+  });
+};
+
+
 this.event = function(event,game) {
   let ship = event.ship;
   let killer = event.killer;
   let ast = event.asteroid;
   switch (event.name) {
     case "ship_spawned":
-      ship.set({x:0,y:0,ship:623});
+      ship.set({x:0,y:0,type:623});
       break;
     case "ship_destroyed":
-      if (duelActive) {
-        if ((killer.name == p1name && ship.name == p2name) || (killer.name == p2name && ship.name == p1name))
-        echo(`DUEL: ${killer.name},${ship.name},winner`);
-        killer.set({ship:623});
-      }
+      echo(`DUEL: ${killer.name},${ship.name}`);
+      killer.set({type:623});
       break;
   }
 };
