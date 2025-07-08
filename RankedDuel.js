@@ -142,7 +142,7 @@ function startDuel(p1input, p2input) {
   let activeDuelers=0;
   p1name=p1input;
   p2name=p2input;
-  for (i=0; i<game.ships.length; i++) {
+  for (let i=0; i<game.ships.length; i++) {
     if (game.ships[i].name == p1name) {
       game.ships[i].set({x:100,y:0,ship:611});
       activeDuelers+=1;
@@ -222,9 +222,6 @@ function convertJsonToArray(jsonText) {
   }
 }
 
-function eloEval() {
-  evaled = convertJsonToArray(data)
-}
 
 let _scoreboard_defaults = {
     components: [
