@@ -170,9 +170,8 @@ this.tick = function(game) {
   if (game.step == 60) {
     customBg();
   }
-
   if (game.step%30 == 2) {
-    updateScoreboard()
+    updateScoreboard(evaled)
   }
   if (game.step%5 == 2) {
     for (let i=0; i<game.ships.length; i++) {
@@ -236,27 +235,33 @@ let _scoreboard_defaults = {
     ]
 }
 
-const updateScoreboard = () => {
-  let result = evaled; // Parsed ELO data as [ [globalname, gamename, id, kills, deaths, elo], ... ]
-  let shipNames = game.ships.map(s => s.name);
-
-  let playerEntries = shipNames.map(name => {
-    let match = result.find(entry => entry[1] === name); // Match by gamename
-    if (match) {
-      return match;
+const updateScoreboard = (data) => {
+  if (game.ships.length>0) {
+  let result = data; // Parsed ELO data as [ [globalname, gamename, id, kills, deaths, elo], ... ]
+  let jNames=[]
+  let players=[]
+  for (let i=0; i<result.length;i++) {
+    jNames=jNames+result[i][2]
+  }
+  for (let i=0; i<game.ships.length;i++) {
+    if (jNames.includes(game.ships[i].name)) {
+      let shipDat=result[jNames.indexOf(game.ships[i].name)]
+      let output=shipDat
+      players.push(output)
     } else {
-      return [name, name, name, 0, 0, "/join"]; // Fallback for unknown player
+      let output=[game.ships[i].name,game.ships[i].name,game.ships[i].name,0,0,"/join"]
+      players.push(output)
     }
-  });
+  }
 
   // Optional: Sort by elo (numerically), but push non-number elo ("/join") to the bottom
-  playerEntries.sort((a, b) => {
+  players.sort((a, b) => {
     const eloA = typeof a[5] === "number" ? a[5] : -Infinity;
     const eloB = typeof b[5] === "number" ? b[5] : -Infinity;
     return eloB - eloA;
   });
 
-  let playerComponents = playerEntries.map((item, index) => {
+  let playerComponents = players.map((item, index) => {
     let Y_OFFSET = (index + 1) * 9;
     let elo = item[5];
     let kills = item[3];
@@ -286,6 +291,16 @@ const updateScoreboard = () => {
       ...outp
     ]
   });
+  } else {
+    game.setUIComponent({
+    id: "scoreboard",
+    clickable: false,
+    visible: true,
+    components: [
+      ..._scoreboard_defaults.components,
+    ]
+  });
+  }
 };
 
 
