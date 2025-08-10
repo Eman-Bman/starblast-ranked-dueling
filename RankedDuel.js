@@ -1,6 +1,7 @@
 let ships=[]
 let evaled=[]
 let names=["Current","New","Old"]
+let numbs=["0","1","2","3","4","5","6","7","8","9"]
 
 var Fly_101 = '{"name":"Fly","level":1,"model":1,"size":1.05,"specs":{"shield":{"capacity":[75,100],"reload":[2,3]},"generator":{"capacity":[40,60],"reload":[10,15]},"ship":{"mass":60,"speed":[125,145],"rotation":[110,130],"acceleration":[100,120]}},"bodies":{"main":{"section_segments":12,"offset":{"x":0,"y":0,"z":10},"position":{"x":[0,0,0,0,0,0,0,0,0,0],"y":[-65,-60,-50,-20,10,30,55,75,60],"z":[0,0,0,0,0,0,0,0,0]},"width":[0,8,10,30,25,30,18,15,0],"height":[0,6,8,12,20,20,18,15,0],"propeller":true,"texture":[4,63,10,1,1,1,12,17]},"OI1l1":{"section_segments":12,"offset":{"x":0,"y":0,"z":20},"position":{"x":[0,0,0,0,0,0,0],"y":[-15,0,20,30,60],"z":[0,0,0,0,0]},"width":[0,13,17,10,5],"height":[0,18,25,18,5],"propeller":false,"texture":[7,9,9,4,4]},"cannon":{"section_segments":6,"offset":{"x":0,"y":-15,"z":-10},"position":{"x":[0,0,0,0,0,0],"y":[-40,-50,-20,0,20,30],"z":[0,0,0,0,0,20]},"width":[0,5,8,11,7,0],"height":[0,5,8,11,10,0],"angle":0,"laser":{"damage":[5,6],"rate":4,"type":1,"speed":[160,180],"number":1,"error":2.5},"propeller":false,"texture":[3,3,10,3]}},"wings":{"main":{"length":[60,20],"width":[100,50,40],"angle":[-10,10],"position":[0,20,10],"doubleside":true,"offset":{"x":0,"y":10,"z":5},"bump":{"position":30,"size":20},"texture":[11,63]}},"typespec":{"name":"Fly","level":1,"model":1,"code":101,"specs":{"shield":{"capacity":[75,100],"reload":[2,3]},"generator":{"capacity":[40,60],"reload":[10,15]},"ship":{"mass":60,"speed":[125,145],"rotation":[110,130],"acceleration":[100,120]}},"shape":[1.368,1.368,1.093,0.965,0.883,0.827,0.791,0.767,0.758,0.777,0.847,0.951,1.092,1.667,1.707,1.776,1.856,1.827,1.744,1.687,1.525,1.415,1.335,1.606,1.603,1.578,1.603,1.606,1.335,1.415,1.525,1.687,1.744,1.827,1.856,1.776,1.707,1.667,1.654,0.951,0.847,0.777,0.758,0.767,0.791,0.827,0.883,0.965,1.093,1.368],"lasers":[{"x":0,"y":-1.365,"z":-0.21,"angle":0,"damage":[5,6],"rate":4,"type":1,"speed":[160,180],"number":1,"spread":0,"error":2.5,"recoil":0}],"radius":1.856}}';
 ships.push(Fly_101);
@@ -43,88 +44,11 @@ let VOCABULARY  = [
     {text: "Lag",       icon: "\u0069", key: "J"},
     {text: "Spectate",  icon: "\u0059", key: "W"}
   ];
-
-let map =
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                \n"+
-"                                                                                ";
+let map = ""
+for (let i=0; i<79; i++) {
+  map=map+"                                                                                \n";
+}
+map=map+"                                                                                ";
 
 this.options = {
   root_mode: "",
@@ -218,35 +142,37 @@ this.tick = function(game) {
   {
     for (var i=0;i<game.ships.length;i++)
     {
-      var ship = game.ships[i] ;
-      if (!ship.custom.spec_button_installed)
-      {
-        ship.custom.spec_button_installed = true;
-        ship.setUIComponent(spec_button);
-      }
-      if (!ship.custom.switch_button_installed)
-      {
-        ship.custom.switch_button_installed =true;
-        ship.setUIComponent(switch_button);
-      }
-      if (ship.shield >= 100||ship.type==601) {
-        sendUI(game.ships[i], {
-        id: "shiptype",
-        position: [69.75,0,16,16],
-        visible: true,
-        components: [
-        {type: "text",position:[0,0,100,50],value:(""),color:"#cde"},
-        ]
-        });
-      } else {
-        sendUI(game.ships[i], {
-        id: "shiptype",
-        position: [69.75,0,16,16],
-        visible: true,
-        components: [
-        {type: "text",position:[0,0,100,50],value:("\u274C"),color:"#cde"},
-        ]
-        });
+      var ship = game.ships[i];
+      if (ship.custom.new === false) {
+        if (!ship.custom.spec_button_installed)
+        {
+          ship.custom.spec_button_installed = true;
+          ship.setUIComponent(spec_button);
+        }
+        if (!ship.custom.switch_button_installed)
+        {
+          ship.custom.switch_button_installed =true;
+          ship.setUIComponent(switch_button);
+        }
+        if (ship.shield >= 100||ship.type==601) {
+          sendUI(game.ships[i], {
+          id: "shiptype",
+          position: [69.75,0,16,16],
+          visible: true,
+          components: [
+          {type: "text",position:[0,0,100,50],value:(""),color:"#cde"},
+          ]
+          });
+        } else {
+          sendUI(game.ships[i], {
+          id: "shiptype",
+          position: [69.75,0,16,16],
+          visible: true,
+          components: [
+          {type: "text",position:[0,0,100,50],value:("\u274C"),color:"#cde"},
+          ]
+          });
+        }
       }
     }
   }
@@ -274,14 +200,119 @@ eloRecieve = (jsontext) => {
   echo(evaled); // optional: do something with the output
 }
 
+function showKeys(ship) {
+  for (let i = 1; i<10; i++) {
+    sendUI(ship, {
+    id: `${i}`,
+    position: [35+((i-1)%3)*10,35+Math.floor((i-1)/3)*10,10,10],
+    clickable: true,
+    visible: true,
+    components: [
+    { type:"box",position:[0,0,100,100],fill:`hsla(40, 100%, 50%, 0.5)`,stroke:"#CDE",width:2},
+    { type: "text",position: [0,25,100,50],color: "#FFF",value: `${i}`},
+    ]
+    });
+  }
+  sendUI(ship, {
+  id: `0`,
+  position: [45,65,10,10],
+  clickable: true,
+  visible: true,
+  components: [
+  { type:"box",position:[0,0,100,100],fill:`hsla(40, 100%, 50%, 0.5)`,stroke:"#CDE",width:2},
+  { type: "text",position: [0,25,100,50],color: "#FFF",value: `0`},
+  ]
+  });
+  sendUI(ship, {
+  id: `back`,
+  position: [35,65,10,10],
+  clickable: true,
+  visible: true,
+  components: [
+  { type:"box",position:[0,0,100,100],fill:`hsla(40, 100%, 50%, 0.5)`,stroke:"#CDE",width:2},
+  { type: "text",position: [0,25,100,50],color: "#FFF",value: `BACK`},
+  ]
+  });
+  sendUI(ship, {
+  id: `submit`,
+  position: [55,65,10,10],
+  clickable: true,
+  visible: true,
+  components: [
+  { type:"box",position:[0,0,100,100],fill:`hsla(40, 100%, 50%, 0.5)`,stroke:"#CDE",width:2},
+  { type: "text",position: [0,25,100,50],color: "#FFF",value: `SUBMIT`},
+  ]
+  });
+  sendUI(ship, {
+  id: `passtxt`,
+  position: [45,20,10,10],
+  clickable: true,
+  visible: true,
+  components: [
+  { type: "text",position: [0,25,100,50],color: "#FFF",value: `ENTER PASSCODE:`},
+  ]
+  });
+}
+
+function hideKeys(ship) {
+  const uis=["0","1","2","3","4","5","6","7","8","9","submit","back","passtxt","passent"]
+  for (let i=0; i<uis.length; i++) {
+    echo(uis[i])
+    sendUI(ship, {
+    id: `${uis[i]}`,
+    position: [1,1,1,1],
+    clickable: false,
+    visible: false,
+    components: [
+    { type: "text",position: [0,25,100,50],color: "#FFF",value: ``},
+    ]
+    });
+  }
+  ship.custom.new=false
+}
+
+function numRec(ship,num) {
+  if(!ship.custom.pass) {
+    ship.custom.pass=""
+  }
+  if (num=="-1") {
+    ship.custom.pass=ship.custom.pass.slice(0, -1)
+  } else {
+    ship.custom.pass=ship.custom.pass+`${num}`
+  }
+  if ((ship.custom.pass).length>4){
+    ship.custom.pass=ship.custom.pass.slice(0, -1)
+  } else {
+    sendUI(ship, {
+    id: `passent`,
+    position: [40,23,20,10],
+    clickable: true,
+    visible: true,
+    components: [
+    { type: "text",position: [0,25,100,100],color: "#FFF",value: `${ship.custom.pass}`},
+    ]
+    });
+  }
+}
+
+function submit(ship) {
+  const data=[[0,0,0,0,0,6235]]
+  for (let i=0; i<data.length; i++) {
+    if (data[i][5]==Number(ship.custom.pass)) {
+      echo("passed")
+      hideKeys(ship)
+    }
+  }
+}
+
 function convertJsonToArray(jsonText) {
   try {
     const data = JSON.parse(jsonText);
     const result = [];
 
     for (const userId in data) {
-      const { globalname, gamename, kills, deaths, elo } = data[userId];
-      result.push([userId, globalname, gamename, kills, deaths, elo]);
+      const { globalname, gamename, kills, deaths, elo, pass } = data[userId];
+      result.push([userId, globalname, gamename, kills, deaths, elo, pass]);
     }
 
     return result;
@@ -405,6 +436,10 @@ this.event = function(event,game) {
   let component = event.id;
   switch (event.name) {
     case "ship_spawned":
+      if (ship.custom.new !== false) {
+        ship.custom.new = true
+        showKeys(ship)
+      }
       ship.set({x:0,y:0,type:601, stats: 66666666});
       break;
     case "ship_destroyed":
@@ -415,6 +450,12 @@ this.event = function(event,game) {
         specFunc(ship)
       } else if (component == "switch") {
         switchFunc(ship)
+      } else if (numbs.includes(component)){
+        numRec(ship,component)
+      } else if (component == "back") {
+        numRec(ship,"-1")
+      } else if (component == "submit") {
+        submit(ship)
       }
       break;
   }
