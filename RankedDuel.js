@@ -195,9 +195,13 @@ function customBg() {
 }
 
 eloRecieve = (jsontext) => {
-  const result = convertJsonToArray(jsontext);
-  evaled=result
-  echo(evaled); // optional: do something with the output
+  try {
+    evaled = JSON.parse(jsontext);
+    echo(evaled);
+  } catch (e) {
+    console.error("Invalid JSON:", e);
+    evaled = {};
+  }
 }
 
 function showKeys(ship) {
@@ -361,70 +365,83 @@ let _scoreboard_defaults = {
 }
 
 const updateScoreboard = (data) => {
-  if (game.ships.length>0) {
-  let result = data; // Parsed ELO data as [ [globalname, gamename, id, kills, deaths, elo], ... ]
-  let jNames=[]
-  let players=[]
-  for (let i=0; i<result.length;i++) {
-    jNames=jNames+result[i][2]
-  }
-  for (let i=0; i<game.ships.length;i++) {
-    if (jNames.includes(game.ships[i].name)) {
-      let shipDat=result[jNames.indexOf(game.ships[i].name)]
-      let output=shipDat
-      players.push(output)
-    } else {
-      let output=[game.ships[i].name,game.ships[i].name,game.ships[i].name,0,0,"/join"]
-      players.push(output)
+  if (game.ships.length > 0) {
+    // data is now an object: { userId: { globalname, gamename, kills, deaths, elo, pass }, ... }
+    let players = [];
+
+    for (let i = 0; i < game.ships.length; i++) {
+      const ship = game.ships[i];
+      const userData = data[ship.name]; // ship.name should match userId in your JSON
+
+      if (userData) {
+        // Use userData directly
+        players.push([
+          ship.name, // userId
+          userData.globalname,
+          userData.gamename,
+          userData.kills,
+          userData.deaths,
+          userData.elo
+        ]);
+      } else {
+        // Default values for users not in the JSON
+        players.push([
+          ship.name,
+          ship.name,
+          ship.name,
+          0,
+          0,
+          "/join"
+        ]);
+      }
     }
-  }
 
-  // Optional: Sort by elo (numerically), but push non-number elo ("/join") to the bottom
-  players.sort((a, b) => {
-    const eloA = typeof a[5] === "number" ? a[5] : -Infinity;
-    const eloB = typeof b[5] === "number" ? b[5] : -Infinity;
-    return eloB - eloA;
-  });
+    // Sort by elo (numerically), but push non-number elo ("/join") to the bottom
+    players.sort((a, b) => {
+      const eloA = typeof a[5] === "number" ? a[5] : -Infinity;
+      const eloB = typeof b[5] === "number" ? b[5] : -Infinity;
+      return eloB - eloA;
+    });
 
-  let playerComponents = players.map((item, index) => {
-    let Y_OFFSET = (index + 1) * 9;
-    let elo = item[5];
-    let kills = item[3];
-    let deaths = item[4];
-    let id = item[2];
+    let playerComponents = players.map((item, index) => {
+      let Y_OFFSET = (index + 1) * 9;
+      let elo = item[5];
+      let kills = item[3];
+      let deaths = item[4];
+      let id = item[2];
 
-    return [
-      { type: "box", position: [0, Y_OFFSET, 100, 8], fill: "hsla(0, 100%, 50%, 0.065)" },
-      { type: "box", position: [62, Y_OFFSET, 7, 8], fill: "hsla(0, 100%, 50%, 0.1)" },
-      { type: "box", position: [70, Y_OFFSET, 7, 8], fill: "hsla(0, 100%, 50%, 0.1)" },
-      { type: "box", position: [78, Y_OFFSET, 22, 8], fill: "hsla(0, 100%, 50%, 0.1)" },
-      { type: "text", position: [2, Y_OFFSET + 1, 55, 6], value: id, color: "hsla(0, 0%, 100%, 1)", align: "left" },
-      { type: "text", position: [62, Y_OFFSET, 7, 8], value: kills, color: "hsla(0, 0%, 100%, 1)", align: "center" },
-      { type: "text", position: [70, Y_OFFSET, 7, 8], value: deaths, color: "hsla(0, 0%, 100%, 1)", align: "center" },
-      { type: "text", position: [78, Y_OFFSET + 1, 22, 6], value: elo, color: "hsla(0, 0%, 100%, 1)", align: "center" },
-    ];
-  });
+      return [
+        { type: "box", position: [0, Y_OFFSET, 100, 8], fill: "hsla(0, 100%, 50%, 0.065)" },
+        { type: "box", position: [62, Y_OFFSET, 7, 8], fill: "hsla(0, 100%, 50%, 0.1)" },
+        { type: "box", position: [70, Y_OFFSET, 7, 8], fill: "hsla(0, 100%, 50%, 0.1)" },
+        { type: "box", position: [78, Y_OFFSET, 22, 8], fill: "hsla(0, 100%, 50%, 0.1)" },
+        { type: "text", position: [2, Y_OFFSET + 1, 55, 6], value: id, color: "hsla(0, 0%, 100%, 1)", align: "left" },
+        { type: "text", position: [62, Y_OFFSET, 7, 8], value: kills, color: "hsla(0, 0%, 100%, 1)", align: "center" },
+        { type: "text", position: [70, Y_OFFSET, 7, 8], value: deaths, color: "hsla(0, 0%, 100%, 1)", align: "center" },
+        { type: "text", position: [78, Y_OFFSET + 1, 22, 6], value: elo, color: "hsla(0, 0%, 100%, 1)", align: "center" },
+      ];
+    });
 
-  let outp = playerComponents.flat();
+    let outp = playerComponents.flat();
 
-  game.setUIComponent({
-    id: "scoreboard",
-    clickable: false,
-    visible: true,
-    components: [
-      ..._scoreboard_defaults.components,
-      ...outp
-    ]
-  });
+    game.setUIComponent({
+      id: "scoreboard",
+      clickable: false,
+      visible: true,
+      components: [
+        ..._scoreboard_defaults.components,
+        ...outp
+      ]
+    });
   } else {
     game.setUIComponent({
-    id: "scoreboard",
-    clickable: false,
-    visible: true,
-    components: [
-      ..._scoreboard_defaults.components,
-    ]
-  });
+      id: "scoreboard",
+      clickable: false,
+      visible: true,
+      components: [
+        ..._scoreboard_defaults.components,
+      ]
+    });
   }
 };
 
