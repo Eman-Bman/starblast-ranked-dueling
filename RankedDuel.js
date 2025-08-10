@@ -300,11 +300,12 @@ function numRec(ship,num) {
 }
 
 function submit(ship) {
-  const data=[[0,0,0,0,0,6235]]
-  for (let i=0; i<data.length; i++) {
-    if (data[i][5]==Number(ship.custom.pass)) {
-      echo("passed")
-      hideKeys(ship)
+  for (const userId in evaled) {
+    const userData = evaled[userId];
+    if (userData.pass == Number(ship.custom.pass)) {
+      echo("passed");
+      hideKeys(ship);
+      return; // Stop after first match
     }
   }
 }
